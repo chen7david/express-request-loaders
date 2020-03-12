@@ -1,6 +1,9 @@
 module.exports = {
     loadRequest: {
-        context: (req, res, next) =>{ if(!req.ctx) req.ctx = {} },
+        context: (req, res, next) =>{ 
+            if(!req.ctx) req.ctx = {}
+            next()
+         },
     },
 
     loadHeaders: {
@@ -94,6 +97,7 @@ module.exports = {
                 if(!req.ctx.param) req.ctx.param = {}
                 req.ctx.param.verificationToken = token
             }
+            next()
         },
         apiKey: (key) => (req, res, next) =>{
             let apiKey = req.param[key]
