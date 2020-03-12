@@ -38,20 +38,82 @@ module.exports = {
         },
     },
     loadBody: {
-        accessToken: (key) => (req, res, next) =>{},
-        refreshToken: (key) => (req, res, next) =>{},
-        verificationToken: (key) => (req, res, next) =>{},
-        apiKey: (key) => (req, res, next) =>{},
+        accessToken: (key) => (req, res, next) =>{
+            let bearerToken = req.body[key]
+            if(bearerToken) {
+                if(!req.ctx.body) req.ctx.body = {}
+                req.ctx.body.accessToken = bearerToken
+            }
+            next()
+        },
+        refreshToken: (key) => (req, res, next) =>{
+            let token = req.body[key]
+            if(token) {
+                if(!req.ctx.body) req.ctx.body = {}
+                req.ctx.body.refreshToken = token
+            }
+            next()
+        },
+        verificationToken: (key) => (req, res, next) =>{
+            let token = req.body[key]
+            if(token) {
+                if(!req.ctx.body) req.ctx.body = {}
+                req.ctx.body.verificationToken = token
+            }
+            next()
+        },
+        apiKey: (key) => (req, res, next) =>{
+            let apiKey = req.body[key]
+            if(apiKey) {
+                if(!req.ctx.body) req.ctx.body = {}
+                req.ctx.body.apiKey = apiKey
+            }
+            next()
+        },
     },
     loadParam: {
-        accessToken: (key) => (req, res, next) =>{},
-        refreshToken: (key) => (req, res, next) =>{},
-        verificationToken: (key) => (req, res, next) =>{},
-        apiKey: (key) => (req, res, next) =>{},
-    },
-    loadToken: {
-        user: (key) => (req, res, next) =>{},
-        community: (key) => (req, res, next) =>{},
-    },
-    
+        accessToken: (key) => (req, res, next) =>{
+            let token = req.query[key]
+            if(token) {
+                if(!req.ctx.param) req.ctx.param = {}
+                req.ctx.param.accessToken = token
+            }
+            next()
+        },
+        refreshToken: (key) => (req, res, next) =>{
+            let token = req.query[key]
+            if(token) {
+                if(!req.ctx.param) req.ctx.param = {}
+                req.ctx.param.refreshToken = token
+            }
+            next()
+        },
+        verificationToken: (key) => (req, res, next) =>{
+            let token = req.query[key]
+            if(token) {
+                if(!req.ctx.param) req.ctx.param = {}
+                req.ctx.param.verificationToken = token
+            }
+        },
+        apiKey: (key) => (req, res, next) =>{
+            let apiKey = req.param[key]
+            if(apiKey) {
+                if(!req.ctx.param) req.ctx.param = {}
+                req.ctx.param.apiKey = apiKey
+            }
+            next()
+        },
+
+        objectById: (Model) => async (req, res, next, id) =>{
+            let key = Model.name.toLowerCase()
+            const object = await Model.getById(id)
+            if(!object) {
+                return next({message:'invalid_object_id', data:{key}})
+            }else{
+                if(!req.ctx.param) req.ctx.param = {}
+                req.ctx.param[key] = object
+            }
+            next()
+        },
+    },    
 }
